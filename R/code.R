@@ -53,7 +53,7 @@ recordAction <- function(script, locations, durations, wd) {
         }
         ffmpeg(screenInput(w=as.numeric(w), h=as.numeric(h),
                            duration=durations[i]), 
-               fileOutput(outfiles[i], vcodec="VP8"),
+               fileOutput(outfiles[i], vcodec=VP8()),
                overwrite=TRUE, wait=FALSE)
 
         ## Record time shot starts

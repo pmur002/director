@@ -28,7 +28,7 @@ muxScene <- function(label, audioFiles, videoFiles, wd) {
 muxAudioVideo <- function(script, audioFiles, videoFiles, wd) {
     
     ## Mux individual scenes
-    sceneLabels <- script$shots[, "sceneLabel"]
+    sceneLabels <- script$shots[, "shotLabel"]
     sceneNames <- unique(sceneLabels)
     sceneAudio <- split(audioFiles, sceneLabels)[sceneNames]
     sceneVideo <- split(videoFiles, sceneLabels)[sceneNames]
