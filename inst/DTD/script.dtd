@@ -45,8 +45,10 @@
 <!ELEMENT dialogue ANY>
 <!ATTLIST dialogue>
         
-<!-- Allow (very permissively for SSML elements -->
+<!-- Allow (very permissively) for SSML elements -->
 <!ELEMENT speak ANY>
-<!ELEMENT strong ANY>
+<!ELEMENT emphasis ANY>
+<!ATTLIST emphasis 
+    level   (strong|moderate|reduced) #IMPLIED>
 
 
