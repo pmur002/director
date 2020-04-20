@@ -10,7 +10,9 @@ recordDialogue <- function(script, TTS, wd) {
                           paste0("shot-", shots[, "shotLabel"], "-audio.wav"))
     for (i in 1:nrow(shots)) {
         writeLines(shots[i, "dialogue"], infiles[i])
-        TTS$speak(infiles[i], outfiles[i])
+        do.call(TTS$speak,
+                c(list(infile=infiles[i], outfile=outfiles[i]),
+                  TTS$params))
         ## ALL shots will be combined with something else at some point
         ## so prep them now
         wav <- readWave(outfiles[i])

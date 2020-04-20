@@ -5,6 +5,7 @@ import("ffmpeg")
 
 importFrom("xml2",
            "read_xml",
+           "xml_children",
            "xml_find_first",
            "xml_find_all",
            "xml_attr",
@@ -12,6 +13,7 @@ importFrom("xml2",
 
 importFrom("tuneR",
            "Wave",
+           "readMP3",
            "readWave",
            "writeWave",
            "prepComb",
