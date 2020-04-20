@@ -1,6 +1,6 @@
 
 ## Record all dialogue
-recordDialogue <- function(script, wd) {
+recordDialogue <- function(script, TTS, wd) {
 
     ## Create audio files
     shots <- script$shots
@@ -10,7 +10,7 @@ recordDialogue <- function(script, wd) {
                           paste0("shot-", shots[, "shotLabel"], "-audio.wav"))
     for (i in 1:nrow(shots)) {
         writeLines(shots[i, "dialogue"], infiles[i])
-        system(paste("espeak -s 125 -v en -w", outfiles[i], "-f", infiles[i]))
+        TTS$speak(infiles[i], outfiles[i])
         ## ALL shots will be combined with something else at some point
         ## so prep them now
         wav <- readWave(outfiles[i])

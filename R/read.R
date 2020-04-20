@@ -56,10 +56,10 @@ readCode <- function(action) {
            })
 }
 
-readScenes <- function(scenes) {
+readScenes <- function(scenes, TTS) {
     shots <- xml_find_all(scenes, "shot")
     NS <- length(shots)
-    dialogue <- sapply(lapply(shots, xml_find_first, "dialogue"), xml_text)
+    dialogue <- sapply(lapply(shots, xml_find_first, "dialogue"), TTS$read)
     dialogue[is.na(dialogue)] <- ""
     keyaction <- xml_find_first(shots, "keyaction")
     code <- readCode(keyaction)
@@ -86,10 +86,11 @@ readScenes <- function(scenes) {
           location, width, height, duration, keydelay, linedelay, echo)
 }
 
-readScript <- function(filename, label=gsub("[.]xml", "", filename),
+readScript <- function(filename, TTS=defaultTTS,
+                       label=gsub("[.]xml", "", filename), 
                        validate=TRUE) {
     xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")
     stage <- readStage(xml_find_first(xml, "/script/stage"))
-    shots <- readScenes(xml_find_all(xml, "/script/scene"))
+    shots <- readScenes(xml_find_all(xml, "/script/scene"), TTS)
     list(label=label, stage=stage, shots=shots)
 }

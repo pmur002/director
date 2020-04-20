@@ -1,6 +1,7 @@
 
 shootVideo <- function(filename,
                        wd=paste0(gsub("[.]xml$", "", filename), "-video"),
+                       TTS=defaultTTS,
                        clean=FALSE) {
 
     if (clean) {
@@ -13,8 +14,8 @@ shootVideo <- function(filename,
         dir.create(wd)
     }
     
-    script <- readScript(filename)
-    audioFiles <- recordDialogue(script, wd)
+    script <- readScript(filename, TTS)
+    audioFiles <- recordDialogue(script, TTS, wd)
     audioLength <- audioDuration(audioFiles)
     codeLength <- codeDuration(script)
     shotLength <- calculateTiming(script, audioLength, codeLength)
