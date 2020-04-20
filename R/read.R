@@ -61,17 +61,18 @@ readScenes <- function(scenes) {
     NS <- length(shots)
     dialogue <- sapply(lapply(shots, xml_find_first, "dialogue"), xml_text)
     dialogue[is.na(dialogue)] <- ""
-    action <- xml_find_first(shots, "action")
-    code <- readCode(action)
+    keyaction <- xml_find_first(shots, "keyaction")
+    code <- readCode(keyaction)
+    ## TODO:  do something with <pointeraction> elements
     shotLabel <- getAttrs(shots, "id")
     width <- getAttrs(shots, "width", nomatch=NA)
     height <- getAttrs(shots, "height", nomatch=NA)
     location <- getAttrs(shots, "location", nomatch=NA)
-    echo <- getAttrs(action, "echo", nomatch="TRUE")
+    echo <- getAttrs(keyaction, "echo", nomatch="TRUE")
     labels <- getAttrs(shots, "id")
     duration <- getAttrs(shots, "duration", nomatch=NA)
-    keydelay <- getAttrs(action, "keydelay", nomatch=100)
-    linedelay <- getAttrs(action, "linedelay", nomatch=100)
+    keydelay <- getAttrs(keyaction, "keydelay", nomatch=100)
+    linedelay <- getAttrs(keyaction, "linedelay", nomatch=100)
     sceneLabel <- unlist(mapply(
         function(x, i) {
             s <- xml_find_all(x, "shot")
@@ -85,8 +86,9 @@ readScenes <- function(scenes) {
           location, width, height, duration, keydelay, linedelay, echo)
 }
 
-readScript <- function(filename, label=gsub("[.]xml", "", filename)) {
-    xml <- read_xml(filename)
+readScript <- function(filename, label=gsub("[.]xml", "", filename),
+                       validate=TRUE) {
+    xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")
     stage <- readStage(xml_find_first(xml, "/script/stage"))
     shots <- readScenes(xml_find_all(xml, "/script/scene"))
     list(label=label, stage=stage, shots=shots)

@@ -1,7 +1,7 @@
 Package: director
 Type: Package
 Title: Automate video demonstrations
-Version: 0.1
+Version: 0.2-0
 Date: 2016-11-30
 Author: Paul Murrell
 Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>

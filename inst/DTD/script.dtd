@@ -1,0 +1,52 @@
+
+<!ELEMENT script (setting?, stage, scene+)>
+<!ATTLIST script
+    version CDATA #REQUIRED>
+
+<!ELEMENT stage (location+)>
+<!ATTLIST stage
+    x      CDATA #IMPLIED
+    y      CDATA #IMPLIED
+    width  CDATA #IMPLIED
+    height CDATA #IMPLIED>
+
+<!ELEMENT location EMPTY>
+<!ATTLIST location
+    id      ID    #REQUIRED
+    program CDATA #REQUIRED
+    x       CDATA #IMPLIED
+    y       CDATA #IMPLIED
+    width   CDATA #IMPLIED
+    height  CDATA #IMPLIED>
+
+<!ELEMENT scene (shot+)>
+<!ATTLIST scene
+    id      ID    #REQUIRED>
+
+<!ELEMENT shot ((pointeraction|keyaction)?, dialogue?)>
+<!ATTLIST shot 
+    location IDREF #IMPLIED
+    duration CDATA #IMPLIED>
+
+<!ELEMENT pointeraction ANY>
+<!ATTLIST pointeraction
+    x        CDATA #REQUIRED
+    y        CDATA #REQUIRED
+    modifier CDATA #IMPLIED>
+
+<!ELEMENT keyaction ANY>
+<!ATTLIST keyaction
+    echo      (TRUE|FALSE) #IMPLIED
+    keydelay  CDATA        #IMPLIED
+    linedelay CDATA        #IMPLIED>
+
+<!-- Needs to be permissive to allow arbitrary text OR SSML, 
+     which is itself permissive -->
+<!ELEMENT dialogue ANY>
+<!ATTLIST dialogue>
+        
+<!-- Allow (very permissively for SSML elements -->
+<!ELEMENT speak ANY>
+<!ELEMENT strong ANY>
+
+
