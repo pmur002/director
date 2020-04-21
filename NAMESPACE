@@ -19,4 +19,9 @@ importFrom("tuneR",
            "prepComb",
            "bind")
 
-export("shootVideo")
+importFrom("av",
+           "read_audio_bin")
+
+export("shootVideo",
+       "defaultTTS",
+       "pollyTTS")
