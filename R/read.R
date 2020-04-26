@@ -86,6 +86,15 @@ readScenes <- function(scenes, TTS) {
           location, width, height, duration, keydelay, linedelay, echo)
 }
 
+## Check that <shot>s refer to existing <location>, etc
+validScript <- function(script) {
+    locations <- xml_attr(xml_find_all(script, "//location"), "id")
+    shotsLocns <- xml_attr(xml_find_all(script, "//shot"), "location")
+    if (!all(shotLocns[!is.na(shotLocns)] %in% locations)) {
+        stop("Shot refers to non-existent location")
+    }
+}
+
 readScript <- function(filename, TTS=defaultTTS,
                        label=gsub("[.]xml", "", filename), 
                        validate=TRUE) {
