@@ -3,6 +3,8 @@
 <!ATTLIST script
     version CDATA #REQUIRED>
 
+<!ELEMENT setting (#PCDATA)>
+
 <!ELEMENT stage (location+)>
 <!ATTLIST stage
     x      CDATA #IMPLIED
