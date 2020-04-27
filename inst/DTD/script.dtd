@@ -44,7 +44,7 @@
 
 <!-- Needs to be permissive to allow arbitrary text OR SSML, 
      which is itself permissive -->
-<!ELEMENT dialogue ANY>
+<!ELEMENT dialogue (#PCDATA | speak)* >
 <!ATTLIST dialogue>
         
 <!-- Allow (very permissively) for SSML elements -->
