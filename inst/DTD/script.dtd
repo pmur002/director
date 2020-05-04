@@ -12,10 +12,9 @@
     width  CDATA #IMPLIED
     height CDATA #IMPLIED>
 
-<!ELEMENT location EMPTY>
+<!ELEMENT location (#PCDATA)>
 <!ATTLIST location
     id      ID    #REQUIRED
-    program CDATA #REQUIRED
     x       CDATA #IMPLIED
     y       CDATA #IMPLIED
     width   CDATA #IMPLIED
@@ -41,7 +40,6 @@
 
 <!ELEMENT keyaction (#PCDATA)>
 <!ATTLIST keyaction
-    echo      (TRUE|FALSE) #IMPLIED
     keydelay  CDATA        #IMPLIED
     linedelay CDATA        #IMPLIED>
 
@@ -52,6 +50,9 @@
         
 <!-- Allow (very permissively) for SSML elements -->
 <!ELEMENT speak ANY>
+<!ELEMENT prosody ANY>
+<!ATTLIST prosody
+    rate    (x-slow|slow|medium|fast|x-fast) #IMPLIED>
 <!ELEMENT emphasis ANY>
 <!ATTLIST emphasis 
     level   (strong|moderate|reduced) #IMPLIED>

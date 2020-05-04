@@ -25,7 +25,7 @@ readStage <- function(stage) {
     stageh <- xml_attr(stage, "height")
     locations <- xml_find_all(stage, "location")
     label <- getAttrs(locations, "id")
-    program <- getAttrs(locations, "program", nomatch="fail")
+    command <- xml_text(locations)
     x <- getAttrs(locations, "x", nomatch=0)
     y <- getAttrs(locations, "y", nomatch=0)
     w <- getAttrs(locations, "width", nomatch=600)
@@ -43,7 +43,7 @@ readStage <- function(stage) {
         stageh <- max(as.numeric(y) + as.numeric(h))
     }
     list(x=stagex, y=stagey, width=stagew, height=stageh,
-         set=cbind(label, program, x, y, w, h, windowID=NA))
+         set=cbind(label, command, x, y, w, h, windowID=NA))
 }
 
 readCode <- function(action) {
@@ -86,6 +86,17 @@ readScenes <- function(scenes, TTS) {
           location, width, height, duration, keydelay, linedelay, echo)
 }
 
+readSetting <- function(setting) {
+    if (length(setting)) {
+        code <- xml_text(setting)
+        result <- eval(parse(text=code))
+        if (!inherits(result, "DirectorSetting"))
+            stop(paste("Invalid setting:\n", code))
+    } else {
+        localLinuxSetting()
+    }
+}
+
 ## Check that <shot>s refer to existing <location>, etc
 validScript <- function(script) {
     locations <- xml_attr(xml_find_all(script, "//location"), "id")
@@ -99,7 +110,8 @@ readScript <- function(filename, TTS=defaultTTS,
                        label=gsub("[.]xml", "", filename), 
                        validate=TRUE) {
     xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")
+    setting <- readSetting(xml_find_first(xml, "/script/setting"))
     stage <- readStage(xml_find_first(xml, "/script/stage"))
     shots <- readScenes(xml_find_all(xml, "/script/scene"), TTS)
-    list(label=label, stage=stage, shots=shots)
+    list(label=label, setting=setting, stage=stage, shots=shots)
 }

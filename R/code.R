@@ -33,7 +33,7 @@ getLocationWindow <- function(loc, locations) {
     }
 }
 
-recordAction <- function(script, locations, durations, wd) {
+recordAction <- function(script, locations, durations, setting, wd) {
 
     ## Create video files
     shots <- script$shots
@@ -62,20 +62,15 @@ recordAction <- function(script, locations, durations, wd) {
         ## Focus relevant window
         loc <- shots[i, "location"]
         if (!is.na(loc)) {
-            focusWindow(getLocationWindow(loc, locations))
+            setting$focusWindow(getLocationWindow(loc, locations))
         }
         
         ## "type" code in window
-        if (as.logical(shots[i, "echo"])) {
-            lines <- strsplit(shots[i, "code"], "\n")[[1]]
-            for (j in seq_along(lines)) {
-                typestring(paste0(lines[j], "\n"),
-                           delay=as.numeric(shots[i, "keydelay"]))
-                Sys.sleep(as.numeric(shots[i, "linedelay"])/1000)
-            }
-        } else {
-            ## (or just evaluate it if echo is FALSE)
-            source(textConnection(shots[i, "code"]), new.env())
+        lines <- strsplit(shots[i, "code"], "\n")[[1]]
+        for (j in seq_along(lines)) {
+            setting$keyAction(paste0(lines[j], "\n"),
+                              delay=as.numeric(shots[i, "keydelay"]))
+            Sys.sleep(as.numeric(shots[i, "linedelay"])/1000)
         }
 
         ## Pause if necessary until end of shot

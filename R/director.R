@@ -19,9 +19,10 @@ shootVideo <- function(filename,
     audioLength <- audioDuration(audioFiles)
     codeLength <- codeDuration(script)
     shotLength <- calculateTiming(script, audioLength, codeLength)
-    locations <- setStage(script$stage)
+    locations <- setStage(script$stage, script$setting)
     paddedAudioFiles <- padAudio(audioFiles, audioLength, shotLength)
-    videoFiles <- recordAction(script, locations, shotLength, wd)
-    exitStage(locations)
+    videoFiles <- recordAction(script, locations, shotLength,
+                               script$setting, wd)
+    exitStage(locations, script$setting)
     muxAudioVideo(script, paddedAudioFiles, videoFiles, wd)
 }
