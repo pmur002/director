@@ -22,27 +22,27 @@ setting <- function(create, focus, close, key, pointer) {
 ## (and assume that required programs are present)
 localLinuxSetting <- function() {
     create <- function(location) {
-        wid <- openWindow(location["command"])
+        wid <- wmctrl::openWindow(location["command"])
         ## Sys.sleep(1)
-        removeWindowState(wid, "maximized_horz")
-        removeWindowState(wid, "maximized_vert")
-        positionWindow(wid, location["x"], location["y"],
-                       location["w"], location["h"])
+        wmctrl::removeWindowState(wid, "maximized_horz")
+        wmctrl::removeWindowState(wid, "maximized_vert")
+        wmctrl::positionWindow(wid, location["x"], location["y"],
+                               location["w"], location["h"])
         wid
     }
     focus <- function(which = NULL) {
         if (is.null(which)) {
             ## Show the desktop
-            showDesktop()
+            wmctrl::showDesktop()
         } else {
-            focusWindow(which)
+            wmctrl::focusWindow(which)
         }
     }
     close <- function(location) {
-        closeWindow(location["windowID"])
+        wmctrl::closeWindow(location["windowID"])
     }
     key <- function(keys, delay) {
-        typestring(keys, delay=delay)
+        xdotool::typestring(keys, delay=delay)
     }
     mouse <- function() {
     }

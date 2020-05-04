@@ -1,6 +1,4 @@
 
-import("wmctrl")
-import("xdotool")
 import("ffmpeg")
 
 importFrom("xml2",
