@@ -25,18 +25,21 @@
 <!ATTLIST scene
     id      ID    #REQUIRED>
 
-<!ELEMENT shot ((pointeraction|keyaction)?, dialogue?)>
+<!ELEMENT shot (backstage?, (pointeraction|keyaction)?, dialogue?)>
 <!ATTLIST shot 
     location IDREF #IMPLIED
     duration CDATA #IMPLIED>
 
-<!ELEMENT pointeraction ANY>
+<!ELEMENT backstage (#PCDATA)>
+<!ATTLIST backstage>
+
+<!ELEMENT pointeraction EMPTY>
 <!ATTLIST pointeraction
     x        CDATA #REQUIRED
     y        CDATA #REQUIRED
     modifier CDATA #IMPLIED>
 
-<!ELEMENT keyaction ANY>
+<!ELEMENT keyaction (#PCDATA)>
 <!ATTLIST keyaction
     echo      (TRUE|FALSE) #IMPLIED
     keydelay  CDATA        #IMPLIED
