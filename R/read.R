@@ -100,13 +100,13 @@ readSetting <- function(setting) {
 ## Check that <shot>s refer to existing <location>, etc
 validScript <- function(script) {
     locations <- xml_attr(xml_find_all(script, "//location"), "id")
-    shotsLocns <- xml_attr(xml_find_all(script, "//shot"), "location")
+    shotLocns <- xml_attr(xml_find_all(script, "//shot"), "location")
     if (!all(shotLocns[!is.na(shotLocns)] %in% locations)) {
         stop("Shot refers to non-existent location")
     }
 }
 
-readScript <- function(filename, TTS=defaultTTS,
+readScript <- function(filename, TTS=espeakTTS(),
                        label=gsub("[.]xml", "", filename), 
                        validate=TRUE) {
     xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")

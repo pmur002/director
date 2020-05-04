@@ -5,7 +5,7 @@
 ## TTS$speak() turns text into audio
 TTS <- function(read, speak, ...) {
     x <- list(read=read, speak=speak, params=list(...))
-    class(x) <- "director.TTS"
+    class(x) <- "DirectorTTS"
     x
 }
 
@@ -15,13 +15,15 @@ defaultRead <- function(dialogue) {
     xml_text(dialogue)
 }
 
-defaultSpeak <- function(infile, outfile, ...) {
+eSpeak <- function(infile, outfile, ...) {
     system(paste("espeak -s 125 -v en -w", outfile,
                  "-f", infile))
     outfile    
 }
 
-defaultTTS <- TTS(read=defaultRead, speak=defaultSpeak)
+espeakTTS <- function() {
+    TTS(read=defaultRead, speak=eSpeak)
+}
 
 #######################################
 ## Amazon Polly

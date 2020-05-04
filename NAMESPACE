@@ -23,5 +23,10 @@ importFrom("av",
            "read_audio_bin")
 
 export("shootVideo",
-       "defaultTTS",
+
+       "setting",
+       "localLinuxSetting",
+       
+       "TTS",
+       "espeakTTS",
        "pollyTTS")

@@ -8,7 +8,7 @@
 ## - send key events to (current) window
 ## - send pointer events to (current) window
 
-createSetting <- function(create, focus, close, key, pointer) {
+setting <- function(create, focus, close, key, pointer) {
     setting <- list(createWindow = create,
                     focusWindow = focus,
                     closeWindow = close,
@@ -46,7 +46,7 @@ localLinuxSetting <- function() {
     }
     mouse <- function() {
     }
-    createSetting(create, focus, close, key, mouse)
+    setting(create, focus, close, key, mouse)
 }
 
 ## Do everything in docker container

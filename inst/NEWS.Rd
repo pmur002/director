@@ -4,6 +4,19 @@
 
 \section{Changes in version 0.2-0}{
   \itemize{
-    Add DTD for script XML files and validate against it by default.
+    \item Add DTD for script XML files and validate against it by
+    default.
+
+    \item Add \code{TTS} argument to  \code{shootVideo} to allow user
+    to select text-to-speech engine, plus add
+    \code{TTS()} function for defining TTS engine, plus
+    provide \code{espeakTTS()} engine and \code{pollyTTS()}
+    (Amazon Polly) engine.
+
+    \item Add \code{<setting>} element to script XML to allow script
+    writer to specify the context within which the video should
+    be shot, plus add \code{setting()} function to allow user to
+    define a setting, plus add \code{localLinuxSetting()} function
+    to define a local Linux context.
   }
 }
