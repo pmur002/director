@@ -16,12 +16,15 @@ defaultRead <- function(dialogue) {
 }
 
 eSpeak <- function(infile, outfile, ...) {
-    cmd <- paste(getOption("director.espeakPath"),
-                 "-s 125 -v en -w", outfile,
-                 "-f", infile)
     if (.Platform$OS.type == "windows") {
+        cmd <- paste(shortPathName(getOption("director.espeakPath")),
+                     "-s 125 -v en -w", outfile,
+                     "-f", infile)
         shell(cmd)
     } else {
+        cmd <- paste(getOption("director.espeakPath"),
+                     "-s 125 -v en -w", outfile,
+                     "-f", infile)
         system(cmd)
     }
     outfile    
