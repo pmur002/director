@@ -16,16 +16,26 @@ defaultRead <- function(dialogue) {
 }
 
 eSpeak <- function(infile, outfile, ...) {
-    system(paste("espeak -s 125 -v en -w", outfile,
-                 "-f", infile))
+    cmd <- paste(getOption("director.espeakPath"),
+                 "-s 125 -v en -w", outfile,
+                 "-f", infile)
+    if (.Platform$OS.type == "windows") {
+        shell(cmd)
+    } else {
+        system(cmd)
+    }
     outfile    
 }
 
 espeakTTS <- function() {
-    if (is.null(getOption("director.espeakPath")) &&
-        Sys.which("espeak")) {
-        stop(paste("Unable to find 'espeak'",
-                   "(try setting 'director.espeakPath' option)"))
+    if (is.null(getOption("director.espeakPath"))) {
+        path <- Sys.which("espeak")
+        if (path == "") {
+            stop(paste("Unable to find 'espeak'",
+                       "(try setting 'director.espeakPath' option)"))
+        } else {
+            options("director.espeakPath"=path)
+        }
     }
     TTS(read=defaultRead, speak=eSpeak)
 }
