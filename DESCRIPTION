@@ -9,7 +9,7 @@ Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>
 Description: Provides R functions to automate the production of
              demonstration videos with audio commentary, all based
              on a single XML script.
-Imports: av, ffmpeg, xml2, tuneR
-Suggests: wmctrl, xdotool, autohotkey
+Imports: av, ffmpeg, tuneR, xml2
+Suggests: autohotkey, wmctrl, xdotool
 License: GPL-3
 SystemRequirements: espeak

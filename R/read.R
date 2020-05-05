@@ -98,8 +98,14 @@ readSetting <- function(setting) {
     }
 }
 
+scriptVersion <- "1.0"
+
 ## Check that <shot>s refer to existing <location>, etc
-validScript <- function(script) {
+validateScript <- function(script) {
+    version <- xml_attr(xml_root(script), "version")
+    if (scriptVersion != version) {
+        stop("Script version mismatch")
+    }
     locations <- xml_attr(xml_find_all(script, "//location"), "id")
     shotLocns <- xml_attr(xml_find_all(script, "//shot"), "location")
     if (!all(shotLocns[!is.na(shotLocns)] %in% locations)) {
@@ -111,6 +117,7 @@ readScript <- function(filename, TTS=espeakTTS(),
                        label=gsub("[.]xml", "", filename), 
                        validate=TRUE) {
     xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")
+    validateScript(xml)
     setting <- readSetting(xml_find_first(xml, "/script/setting"))
     stage <- readStage(xml_find_first(xml, "/script/stage"))
     shots <- readScenes(xml_find_all(xml, "/script/scene"), TTS)
