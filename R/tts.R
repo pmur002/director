@@ -22,6 +22,11 @@ eSpeak <- function(infile, outfile, ...) {
 }
 
 espeakTTS <- function() {
+    if (is.null(getOption("director.espeakPath")) &&
+        Sys.which("espeak")) {
+        stop(paste("Unable to find 'espeak'",
+                   "(try setting 'director.espeakPath' option)"))
+    }
     TTS(read=defaultRead, speak=eSpeak)
 }
 
