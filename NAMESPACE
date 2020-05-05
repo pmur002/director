@@ -23,7 +23,8 @@ importFrom("av",
 export("shootVideo",
 
        "setting",
-       "localLinuxSetting",
+       "localLinux",
+       "localWindows",
        
        "TTS",
        "espeakTTS",

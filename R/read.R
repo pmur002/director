@@ -93,7 +93,7 @@ readSetting <- function(setting) {
         if (!inherits(result, "DirectorSetting"))
             stop(paste("Invalid setting:\n", code))
     } else {
-        localLinuxSetting()
+        localLinux()
     }
 }
 

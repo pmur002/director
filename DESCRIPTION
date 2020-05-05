@@ -10,6 +10,6 @@ Description: Provides R functions to automate the production of
              demonstration videos with audio commentary, all based
              on a single XML script.
 Imports: av, ffmpeg, xml2, tuneR
-Suggests: wmctrl, xdotool
+Suggests: wmctrl, xdotool, autohotkey
 License: GPL-3
 SystemRequirements: espeak

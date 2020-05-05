@@ -15,7 +15,7 @@ shootVideo <- function(filename,
         dir.create(wd)
     }
     
-    script <- readScript(filename, TTS, validate)
+    script <- readScript(filename, TTS=TTS, validate=validate)
     audioFiles <- recordDialogue(script, TTS, wd)
     audioLength <- audioDuration(audioFiles)
     codeLength <- codeDuration(script)

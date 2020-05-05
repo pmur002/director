@@ -1,6 +1,7 @@
 \name{setting}
 \alias{setting}
-\alias{localLinuxSetting}
+\alias{localLinux}
+\alias{localWindows}
 \title{
   Define a Video Setting
 }
@@ -9,7 +10,8 @@
 }
 \usage{
 setting(create, focus, close, key, pointer)
-localLinuxSetting()
+localLinux()
+localWindows()
 }
 \arguments{
   \item{create}{A function that can create a window on the desktop,
@@ -33,9 +35,12 @@ localLinuxSetting()
   The \code{setting} function is used to define a setting for
   shooting a movie.
 
-  The \code{localLinuxSetting} function defines a Linux setting.
+  The \code{localLinux} function defines a Linux setting.
   It assumes the existence of a windowing system and the utilities that
   underly the \pkg{wmctrl} and \pkg{xdotool} packages.
+
+  The \code{localWindows} function defines a Windows setting.
+  It assumes that \command{AutoHotKey} is installed.
 }
 \value{
   An object of class \code{DirectorSetting}.

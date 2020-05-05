@@ -20,7 +20,7 @@ setting <- function(create, focus, close, key, pointer) {
 
 ## Just do everything on local machine
 ## (and assume that required programs are present)
-localLinuxSetting <- function() {
+localLinux <- function() {
     create <- function(location) {
         wid <- wmctrl::openWindow(location["command"])
         ## Sys.sleep(1)
@@ -52,4 +52,31 @@ localLinuxSetting <- function() {
 ## Do everything in docker container
 ## (and assume that the container has required software)
 dockerSetting <- function(image) {
+}
+
+localWindows <- function() {
+    create <- function(location) {
+        wid <- autohotkey::openWindow(location["command"])
+        ## Sys.sleep(1)
+        autohotkey::positionWindow(wid, location["x"], location["y"],
+                                   location["w"], location["h"])
+        wid
+    }
+    focus <- function(which = NULL) {
+        if (is.null(which)) {
+            ## Show the desktop
+            autohotkey::showDesktop()
+        } else {
+            autohotkey::focusWindow(which)
+        }
+    }
+    close <- function(location) {
+        autohotkey::closeWindow(location["windowID"])
+    }
+    key <- function(keys, delay) {
+        autohotkey::typeString(keys)
+    }
+    mouse <- function() {
+    }
+    setting(create, focus, close, key, mouse)    
 }
