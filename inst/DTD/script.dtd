@@ -5,32 +5,31 @@
 
 <!ELEMENT setting (#PCDATA)>
 
-<!ELEMENT stage (location+)>
+<!ELEMENT stage EMPTY>
 <!ATTLIST stage
     x      CDATA #IMPLIED
     y      CDATA #IMPLIED
     width  CDATA #IMPLIED
     height CDATA #IMPLIED>
 
-<!ELEMENT location (#PCDATA)>
+<!ELEMENT scene (shot+)>
+<!ATTLIST scene
+    id      ID           #REQUIRED
+    record  (TRUE|FALSE) #IMPLIED>
+
+<!ELEMENT shot ((pointeraction|keyaction)?, dialogue?, location?)>
+<!ATTLIST shot 
+    location CDATA        #IMPLIED
+    duration CDATA        #IMPLIED
+    record   (TRUE|FALSE) #IMPLIED>
+
+<!ELEMENT location EMPTY>
 <!ATTLIST location
     id      ID    #REQUIRED
     x       CDATA #IMPLIED
     y       CDATA #IMPLIED
     width   CDATA #IMPLIED
     height  CDATA #IMPLIED>
-
-<!ELEMENT scene (shot+)>
-<!ATTLIST scene
-    id      ID    #REQUIRED>
-
-<!ELEMENT shot (backstage?, (pointeraction|keyaction)?, dialogue?)>
-<!ATTLIST shot 
-    location IDREF #IMPLIED
-    duration CDATA #IMPLIED>
-
-<!ELEMENT backstage (#PCDATA)>
-<!ATTLIST backstage>
 
 <!ELEMENT pointeraction EMPTY>
 <!ATTLIST pointeraction

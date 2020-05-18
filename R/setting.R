@@ -21,8 +21,8 @@ setting <- function(create, focus, close, key, pointer) {
 ## Just do everything on local machine
 ## (and assume that required programs are present)
 localLinux <- function() {
-    create <- function(location) {
-        wid <- wmctrl::openWindow(location["command"])
+    create <- function(command, location) {
+        wid <- wmctrl::openWindow(command)
         ## Sys.sleep(1)
         wmctrl::removeWindowState(wid, "maximized_horz")
         wmctrl::removeWindowState(wid, "maximized_vert")
@@ -55,8 +55,8 @@ dockerSetting <- function(image) {
 }
 
 localWindows <- function() {
-    create <- function(location) {
-        wid <- autohotkey::openWindow(location["command"])
+    create <- function(command, location) {
+        wid <- autohotkey::openWindow(command)
         ## Sys.sleep(1)
         autohotkey::positionWindow(wid, location["x"], location["y"],
                                    location["w"], location["h"])

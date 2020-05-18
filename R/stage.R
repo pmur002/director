@@ -4,9 +4,8 @@
 setStage <- function(stage, setting) {
     ## Show desktop
     setting$focusWindow()
-    set <- stage$set
-    windowID <- apply(set, 1, setting$createWindow)
-    cbind(label=set[, "label"], windowID)
+    ## Empty stage (for now)
+    cbind(label=character(), windowID=character())
 }
 
 

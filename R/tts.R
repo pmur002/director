@@ -53,7 +53,12 @@ espeakTTS <- function() {
 
 ## Polly TTS keeps XML content (so SSML stays in)
 pollyRead <- function(dialogue) {
-    as.character(xml_children(dialogue))
+    content <- xml_children(dialogue)
+    if (length(content)) {
+        as.character(content)
+    } else {
+        ""
+    }
 }
 
 pollySpeak <- function(infile, outfile,

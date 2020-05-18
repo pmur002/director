@@ -15,7 +15,7 @@ getAttrs <- function(x, attr, nomatch=1:length(x)) {
     attrs
 }
 
-readStage <- function(stage) {
+readStage <- function(stage, locations) {
     if (inherits(stage, "xml_missing")) {
         stop("No stage upon which to play")
     }
@@ -23,9 +23,8 @@ readStage <- function(stage) {
     stagey <- xml_attr(stage, "y")
     stagew <- xml_attr(stage, "width")
     stageh <- xml_attr(stage, "height")
-    locations <- xml_find_all(stage, "location")
+    ## Allow for all locations
     label <- getAttrs(locations, "id")
-    command <- xml_text(locations)
     x <- getAttrs(locations, "x", nomatch=0)
     y <- getAttrs(locations, "y", nomatch=0)
     w <- getAttrs(locations, "width", nomatch=600)
@@ -43,7 +42,7 @@ readStage <- function(stage) {
         stageh <- max(as.numeric(y) + as.numeric(h))
     }
     list(x=stagex, y=stagey, width=stagew, height=stageh,
-         set=cbind(label, command, x, y, w, h, windowID=NA))
+         set=cbind(label, x, y, w, h, windowID=NA))
 }
 
 readCode <- function(action) {
@@ -65,12 +64,10 @@ readScenes <- function(scenes, TTS) {
     code <- readCode(keyaction)
     ## TODO:  do something with <pointeraction> elements
     shotLabel <- getAttrs(shots, "id")
-    width <- getAttrs(shots, "width", nomatch=NA)
-    height <- getAttrs(shots, "height", nomatch=NA)
     location <- getAttrs(shots, "location", nomatch=NA)
-    echo <- getAttrs(keyaction, "echo", nomatch="TRUE")
     labels <- getAttrs(shots, "id")
     duration <- getAttrs(shots, "duration", nomatch=NA)
+    record <- getAttrs(shots, "record", nomatch="TRUE")
     keydelay <- getAttrs(keyaction, "keydelay", nomatch=100)
     linedelay <- getAttrs(keyaction, "linedelay", nomatch=100)
     sceneLabel <- unlist(mapply(
@@ -82,8 +79,19 @@ readScenes <- function(scenes, TTS) {
             rep(id, ns)
         },
         scenes, 1:length(scenes)))
+    ## New locations
+    creates <- sapply(shots,
+                      function(x) {
+                          location <- xml_find_first(x, "location")
+                          if (length(location)) {
+                              xml_attr(location, "id")
+                          } else {
+                              NA
+                          }
+                      })
     cbind(sceneLabel, shotLabel, code, dialogue,
-          location, width, height, duration, keydelay, linedelay, echo)
+          location, duration, record, keydelay, linedelay, 
+          creates)
 }
 
 readSetting <- function(setting) {
@@ -108,7 +116,8 @@ validateScript <- function(script) {
     }
     locations <- xml_attr(xml_find_all(script, "//location"), "id")
     shotLocns <- xml_attr(xml_find_all(script, "//shot"), "location")
-    if (!all(shotLocns[!is.na(shotLocns)] %in% locations)) {
+    if (!all((shotLocns[!is.na(shotLocns)] == "backstage") ||
+             (shotLocns[!is.na(shotLocns)] %in% locations))) {
         stop("Shot refers to non-existent location")
     }
 }
@@ -119,7 +128,8 @@ readScript <- function(filename, TTS=espeakTTS(),
     xml <- read_xml(filename, options=if (validate) "DTDVALID" else "")
     validateScript(xml)
     setting <- readSetting(xml_find_first(xml, "/script/setting"))
-    stage <- readStage(xml_find_first(xml, "/script/stage"))
+    stage <- readStage(xml_find_first(xml, "/script/stage"),
+                       xml_find_all(xml, "//location"))
     shots <- readScenes(xml_find_all(xml, "/script/scene"), TTS)
     list(label=label, setting=setting, stage=stage, shots=shots)
 }

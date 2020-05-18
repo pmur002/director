@@ -16,12 +16,12 @@ chunkDuration <- function(chunk, keydelay, linedelay) {
 
 codeDuration <- function(script) {
     shots <- script$shots
-    echo <- as.logical(shots[, "echo"])
+    record <- as.logical(shots[, "record"])
     code <- shots[, "code"]
     keydelays <- as.numeric(shots[, "keydelay"])
     linedelays <- as.numeric(shots[, "linedelay"])
     durations <- mapply(chunkDuration, code, keydelays, linedelays)
-    ifelse(echo, durations, 0)
+    ifelse(record, durations, 0)
 }
 
 getLocationWindow <- function(loc, locations) {
@@ -43,14 +43,8 @@ recordAction <- function(script, locations, durations, setting, wd) {
 
     for (i in 1:nrow(shots)) {
         ## Start recording
-        w <- shots[i, "width"]
-        if (is.na(w)) {
-            w <- script$stage$width
-        }
-        h <- shots[i, "height"]
-        if (is.na(h)) {
-            h <- script$stage$height
-        }
+        w <- script$stage$width
+        h <- script$stage$height
         ffmpeg(screenInput(w=as.numeric(w), h=as.numeric(h),
                            duration=durations[i]), 
                fileOutput(outfiles[i], vcodec=VP8()),
@@ -61,18 +55,31 @@ recordAction <- function(script, locations, durations, setting, wd) {
         
         ## Focus relevant window
         loc <- shots[i, "location"]
-        if (!is.na(loc)) {
+        backstage <- is.na(loc) || loc == "backstage"
+        if (!backstage) {
             setting$focusWindow(getLocationWindow(loc, locations))
         }
         
         ## "type" code in window
-        lines <- strsplit(shots[i, "code"], "\n")[[1]]
-        for (j in seq_along(lines)) {
-            setting$keyAction(paste0(lines[j], "\n"),
-                              delay=as.numeric(shots[i, "keydelay"]))
-            Sys.sleep(as.numeric(shots[i, "linedelay"])/1000)
+        code <- shots[i, "code"]
+        if (backstage) {
+            locnID <- shots[i, "creates"]
+            if (!is.na(locnID)) {
+                locn <- script$stage$set[script$stage$set[,"label"] == locnID,]
+                windowID <- setting$createWindow(code, locn)
+                script$stage$set <- rbind(script$stage$set, locn)
+            } else {
+                system(code)
+            }
+        } else {
+            lines <- strsplit(code, "\n")[[1]]
+            for (j in seq_along(lines)) {
+                setting$keyAction(paste0(lines[j], "\n"),
+                                  delay=as.numeric(shots[i, "keydelay"]))
+                Sys.sleep(as.numeric(shots[i, "linedelay"])/1000)
+            }
         }
-
+    
         ## Pause if necessary until end of shot
         while (proc.time()[3] - start < durations[i]) {
             Sys.sleep(.1)
