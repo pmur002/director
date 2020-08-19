@@ -33,7 +33,7 @@ getLocationWindow <- function(loc, locations) {
     }
 }
 
-recordAction <- function(script, locations, durations, setting, wd) {
+recordAction <- function(script, durations, setting, wd) {
 
     ## Create video files
     shots <- script$shots
@@ -57,7 +57,7 @@ recordAction <- function(script, locations, durations, setting, wd) {
         loc <- shots[i, "location"]
         backstage <- is.na(loc) || loc == "backstage"
         if (!backstage) {
-            setting$focusWindow(getLocationWindow(loc, locations))
+            setting$focusWindow(getLocationWindow(loc, script$stage$set))
         }
         
         ## "type" code in window
@@ -65,9 +65,11 @@ recordAction <- function(script, locations, durations, setting, wd) {
         if (backstage) {
             locnID <- shots[i, "creates"]
             if (!is.na(locnID)) {
-                locn <- script$stage$set[script$stage$set[,"label"] == locnID,]
+                whichLocn <- script$stage$set[,"label"] == locnID
+                locn <- script$stage$set[whichLocn,]
                 windowID <- setting$createWindow(code, locn)
-                script$stage$set <- rbind(script$stage$set, locn)
+                ## Record windowID
+                script$stage$set[whichLocn, "windowID"] <- windowID
             } else {
                 system(code)
             }
@@ -86,6 +88,7 @@ recordAction <- function(script, locations, durations, setting, wd) {
         }
     }
 
-    ## Return paths to video files
-    outfiles
+    ## Return updated script (e.g., windowIDs filled in)
+    ## AND paths to video files
+    list(script=script, videoFiles=outfiles)
 }
