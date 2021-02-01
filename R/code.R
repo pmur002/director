@@ -80,6 +80,14 @@ recordAction <- function(script, durations, setting, wd) {
                                   delay=as.numeric(shots[i, "keydelay"]))
                 Sys.sleep(as.numeric(shots[i, "linedelay"])/1000)
             }
+            locnID <- shots[i, "creates"]
+            if (!is.na(locnID)) {
+                whichLocn <- script$stage$set[,"label"] == locnID
+                locn <- script$stage$set[whichLocn,]
+                windowID <- setting$captureWindow(locn)
+                ## Record windowID
+                script$stage$set[whichLocn, "windowID"] <- windowID
+            }
         }
     
         ## Pause if necessary until end of shot

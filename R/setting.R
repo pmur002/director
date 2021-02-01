@@ -2,14 +2,16 @@
 ## A <setting> is an expression that generates a "DirectorSetting" object
 
 ## A "DirectorSetting" is a list of (required) functions to
-## - create window
+## - create window (open window by running code in shell)
+## - capture window (find window created by code typed into other window)
 ## - focus window
 ## - close window
 ## - send key events to (current) window
 ## - send pointer events to (current) window
 
-setting <- function(create, focus, close, key, pointer) {
+setting <- function(create, capture, focus, close, key, pointer) {
     setting <- list(createWindow = create,
+                    captureWindow = capture,
                     focusWindow = focus,
                     closeWindow = close,
                     keyAction = key,
@@ -30,6 +32,12 @@ localLinux <- function() {
                                location["w"], location["h"])
         wid
     }
+    capture <- function(location) {
+        wid <- xdotool::windowWithFocus()
+        wmctrl::positionWindow(wid, location["x"], location["y"],
+                               location["w"], location["h"])
+        wid
+    }
     focus <- function(which = NULL) {
         if (is.null(which)) {
             ## Show the desktop
@@ -46,7 +54,7 @@ localLinux <- function() {
     }
     mouse <- function() {
     }
-    setting(create, focus, close, key, mouse)
+    setting(create, capture, focus, close, key, mouse)
 }
 
 ## Do everything in docker container
@@ -61,6 +69,9 @@ localWindows <- function() {
         autohotkey::positionWindow(wid, location["x"], location["y"],
                                    location["w"], location["h"])
         wid
+    }
+    capture <- function(location) {
+        stop("Not yet implemented :(")
     }
     focus <- function(which = NULL) {
         if (is.null(which)) {
@@ -78,5 +89,5 @@ localWindows <- function() {
     }
     mouse <- function() {
     }
-    setting(create, focus, close, key, mouse)    
+    setting(create, capture, focus, close, key, mouse)    
 }
