@@ -1,6 +1,22 @@
 
-## Assumes 'x' is one or more xml_nodes
-getAttrs <- function(x, attr, nomatch=1:length(x)) {
+getAttrs <- function(x, ...) {
+    UseMethod("getAttrs")
+}
+
+getAttrs.xml_node <- function(x, attr, nomatch=1:length(x)) {
+    attrs <- xml_attr(x, attr)
+    if (is.na(attrs)) {
+        if (!is.na(nomatch) && nomatch == "fail") {
+            stop(paste0("Missing required attribute '", attr, "'"))
+        } else {
+            nomatch
+        }
+    } else {
+        attrs
+    }
+}
+
+getAttrs.xml_nodeset <- function(x, attr, nomatch=1:length(x)) {
     attrs <- xml_attr(x, attr)
     nas <- is.na(attrs)
     if (any(nas)) {
@@ -67,7 +83,13 @@ readScenes <- function(scenes, TTS) {
     location <- getAttrs(shots, "location", nomatch=NA)
     labels <- getAttrs(shots, "id")
     duration <- getAttrs(shots, "duration", nomatch=NA)
-    record <- getAttrs(shots, "record", nomatch="TRUE")
+    record <- sapply(shots,
+                     function(x) {
+                         parentScene <- xml_find_all(x, "ancestor::scene")
+                         getAttrs(x, "record",
+                                  nomatch=getAttrs(parentScene, "record",
+                                                   nomatch="TRUE"))
+                     })
     keydelay <- getAttrs(keyaction, "keydelay", nomatch=100)
     linedelay <- getAttrs(keyaction, "linedelay", nomatch=100)
     sceneLabel <- unlist(mapply(
