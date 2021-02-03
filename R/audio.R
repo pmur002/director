@@ -16,7 +16,13 @@ recordDialogue <- function(script, TTS, wd) {
         ## ALL shots will be combined with something else at some point
         ## so prep them now
         wav <- readWave(outfiles[i])
-        writeWave(prepComb(wav, where="end"), outfiles[i])
+        ## If there is no dialogue, the recording will just be zeroes anyway
+        if (all(wav@left == 0)) {
+            prepped <- wav
+        } else {
+            prepped <- prepComb(wav, where="end")
+        }
+        writeWave(prepped, outfiles[i])
     }
 
     ## Return paths to audio files

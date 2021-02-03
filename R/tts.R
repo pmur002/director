@@ -106,7 +106,13 @@ pollySpeak <- function(infile, outfile,
         pcm <- read_audio_bin(audiofile)
         wav <- Wave(pcm, samp.rate=attr(pcm, "sample_rate"), pcm=TRUE)
     }
-    writeWave(prepComb(wav, where="end"), outfile)
+    ## If there is no dialogue, the recording will just be zeroes anyway
+    if (all(wav@left == 0)) {
+        prepped <- wav
+    } else {
+        prepped <- prepComb(wav, where="end")
+    }
+    writeWave(prepped, outfile)
 }
 
 ## Does not allow format="json" OR speechMarks, but those COULD

@@ -55,5 +55,8 @@
 <!ELEMENT emphasis ANY>
 <!ATTLIST emphasis 
     level   (strong|moderate|reduced) #IMPLIED>
-
+<!ELEMENT phoneme ANY>
+<!ATTLIST phoneme
+    alphabet (ipa|x-sampa) #REQUIRED
+    ph       CDATA         #IMPLIED>
 
