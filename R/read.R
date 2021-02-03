@@ -85,7 +85,7 @@ readScenes <- function(scenes, TTS) {
     duration <- getAttrs(shots, "duration", nomatch=NA)
     record <- sapply(shots,
                      function(x) {
-                         parentScene <- xml_find_all(x, "ancestor::scene")
+                         parentScene <- xml_find_first(x, "ancestor::scene")
                          getAttrs(x, "record",
                                   nomatch=getAttrs(parentScene, "record",
                                                    nomatch="TRUE"))
