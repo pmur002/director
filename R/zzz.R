@@ -1,4 +1,9 @@
 
 .onLoad <- function(libname, pkgname) {
-    options("director.espeakPath"=NULL)
+    path <- Sys.which("espeak")
+    if (path != "") {
+        options("director.espeakPath"=path)
+    } else {
+        options("director.espeakPath"=NULL)
+    }
 }

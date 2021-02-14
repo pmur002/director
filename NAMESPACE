@@ -21,7 +21,7 @@ importFrom("tuneR",
 importFrom("av",
            "read_audio_bin")
 
-export("shootVideo",
+export("makeMovie",
 
        "setting",
        "localLinux",
@@ -29,4 +29,8 @@ export("shootVideo",
        
        "TTS",
        "espeakTTS",
-       "pollyTTS")
+       "pollyTTS",
+
+       "directorWorld",
+       "realWorld",
+       "dockerWorld")
