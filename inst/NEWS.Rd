@@ -19,10 +19,15 @@
     define a setting, plus add \code{localLinuxSetting()} function
     to define a local Linux context.
 
-    \item Change \code{shootVideo} to \code{makeMovie} and add a
-    \code{world} argument to describe the world within which the
-    movie will be shot.  Default is \code{realWorld},
-    but \code{dockerWorld()} can be used to shoot video within
-    Docker container.
+    \item Change \code{shootVideo} to \code{makeMovie}.
+
+    \item Add a \code{world} argument to \code{makeMovie} to describe
+    the world within which the movie will be shot.  Default is
+    \code{realWorld} (localhost desktop), but \code{dockerWorld()} can
+    be used to shoot video within Docker container.
+
+    \item Add \code{docker} (logical) argument to \code{pollyTTS()}.
+    If \code{TRUE}, then use offfical Amazon AWS CLI docker image
+    to run Polly speech-to-text.
   }
 }

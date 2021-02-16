@@ -10,6 +10,9 @@ shootVideo.DirectorDockerWorld <- function(world,
     if (!requireNamespace("stevedore", quietly = TRUE)) {
         stop("The 'stevedore' package must be installed")
     }
+    if (!stevedore::docker_available()) {
+        stop("Docker must be (correctly) installed")
+    }
     ## Start a Docker container
     ## (based on world$image)
     docker <- stevedore::docker_client()

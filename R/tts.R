@@ -67,7 +67,8 @@ pollySpeak <- function(infile, outfile,
                        format="mp3",
                        sampleRate="",
                        language=NULL,
-                       lexicons=NULL) {
+                       lexicons=NULL,
+                       docker=FALSE) {
     dialogue <- paste(readLines(infile), collapse="\n")
     ## Try to determine whether this is SSML
     if (grepl("^<speak>", gsub("^ *", "", dialogue))) {
@@ -75,31 +76,63 @@ pollySpeak <- function(infile, outfile,
     } else {
         textType <- "text"
     }
-    audiofile <- tempfile()
+    ## Save result in same dir as final .wav
+    outdir <- dirname(outfile)
+    audiofile <- tempfile(tmpdir=outdir, fileext=paste0(".", format))
     if (is.null(lexicons)) {
         lexiconArgs <- ""
     } else {
 
     }
     if (is.null(language)) {
-        languageArg <- ""
+        languageArg <- NULL
     } else {
-        languageArg <- paste0("--language-code ", language, " ")
+        languageArg <- c("--language-code", language)
     }
     if (nchar(sampleRate)) {
-        sampleRateArg <- paste0("--sample-rate ", sampleRate, " ")
+        sampleRateArg <- c("--sample-rate", sampleRate)
     } else {
-        sampleRateArg <- ""
+        sampleRateArg <- NULL
     }
-    system(paste0("aws polly synthesize-speech ",
-                  "--engine ", engine, " ",
-                  "--output-format ", format, " ",
-                  "--voice-id ", voice, " ",
+    pollycmd <- c("polly", "synthesize-speech",
+                  "--engine", engine, 
+                  "--output-format", format,
+                  "--voice-id", voice, 
                   sampleRateArg,
                   languageArg,
-                  "--text '", dialogue, "' ",
-                  "--text-type ", textType, " ",
-                  audiofile))
+                  "--text",
+                  if (docker) {
+                      ## Do NOT want the quotes around dialog when using
+                      ## Polly via (stevedore interface to) docker
+                      dialogue
+                  } else {
+                      paste0("'", dialogue, "'")
+                  },
+                  "--text-type", textType, 
+                  audiofile)
+    if (docker) {
+        if (!requireNamespace("stevedore", quietly = TRUE)) {
+            stop("The 'stevedore' package must be installed")
+        }
+        if (!stevedore::docker_available()) {
+            stop("Docker must be (correctly) installed")
+        }
+        ## Run Polly command in a Docker container (based on AWS CLI image)
+        docker <- stevedore::docker_client()
+        docker$container$run("amazon/aws-cli",
+                             pollycmd,
+                             ## Mount local AWS credentials and config
+                             ## AND mount movie working dir as location
+                             ## where Polly result gets generated (/aws)
+                             volumes=c(paste0(normalizePath("~/.aws"),
+                                              ":/root/.aws"),
+                                       paste0(normalizePath(getwd()),
+                                              ":/aws")),
+                             rm=TRUE)
+    } else {
+        awscmd <- paste("aws", paste(pollycmd, collapse=" "))
+        system(awscmd)
+    }
     if (format == "mp3") {
         wav <- readMP3(audiofile)
     } else {
@@ -125,7 +158,9 @@ pollyTTS <- function(voice="Matthew",
                      ## Only relevant for bilingual voices 
                      language=NULL,
                      ## Special pronunciations
-                     lexicons=NULL) {
+                     lexicons=NULL,
+                     ## Use official AWS CLI docker image?
+                     docker=FALSE) {
     engine <- match.arg(engine)
     format <- match.arg(format)
     if (sampleRate == "default") {
@@ -152,5 +187,6 @@ pollyTTS <- function(voice="Matthew",
     TTS(read=pollyRead, speak=pollySpeak,
         voice=voice, engine=engine, format=format,
         sampleRate=sampleRate,
-        language=language, lexicons=lexicons)
+        language=language, lexicons=lexicons,
+        docker=docker)
 }            
