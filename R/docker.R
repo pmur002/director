@@ -1,8 +1,9 @@
 
 ## Support for shooting a video in a Docker "world"
 
-dockerWorld <- function(image, ...) {
-    directorWorld(image=image, class="DirectorDockerWorld")
+dockerWorld <- function(image, volumes=NULL, ...) {
+    directorWorld(image=image, volumes=volumes,
+                  class="DirectorDockerWorld")
 }
 
 shootVideo.DirectorDockerWorld <- function(world,
@@ -16,13 +17,16 @@ shootVideo.DirectorDockerWorld <- function(world,
     ## Start a Docker container
     ## (based on world$image)
     docker <- stevedore::docker_client()
-    container <- docker$container$create(world$image,
-                                         ## Keep container open
-                                         "/bin/bash", tty=TRUE,
-                                         ## Mount local output directory
-                                         volumes=paste0(normalizePath(getwd()),
-                                                        ":/home/director"),
-                                         working_dir="/home/director")
+    container <-
+        docker$container$create(world$image,
+                                ## Keep container open
+                                "/bin/bash", tty=TRUE,
+                                ## Mount local output directory
+                                ## AND any world$volumes specified by the user
+                                volumes=c(world$volumes,
+                                          paste0(normalizePath(getwd()),
+                                                 ":/home/director")),
+                                working_dir="/home/director")
     container$start()
     ## Start Xvfb
     cmd <- c("Xvfb", ":1", "-screen", "0", "1920x1200x24")

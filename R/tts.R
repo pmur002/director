@@ -68,7 +68,8 @@ pollySpeak <- function(infile, outfile,
                        sampleRate="",
                        language=NULL,
                        lexicons=NULL,
-                       docker=FALSE) {
+                       docker=FALSE,
+                       volumes="") {
     dialogue <- paste(readLines(infile), collapse="\n")
     ## Try to determine whether this is SSML
     if (grepl("^<speak>", gsub("^ *", "", dialogue))) {
@@ -124,10 +125,7 @@ pollySpeak <- function(infile, outfile,
                              ## Mount local AWS credentials and config
                              ## AND mount movie working dir as location
                              ## where Polly result gets generated (/aws)
-                             volumes=c(paste0(normalizePath("~/.aws"),
-                                              ":/root/.aws"),
-                                       paste0(normalizePath(getwd()),
-                                              ":/aws")),
+                             volumes=volumes,
                              rm=TRUE)
     } else {
         awscmd <- paste("aws", paste(pollycmd, collapse=" "))
@@ -184,9 +182,20 @@ pollyTTS <- function(voice="Matthew",
                 stop("Invalid sample rate")
         }
     }
+    if (docker) {
+        ## Evaluate these on creation of Polly TTS object 
+        ## because, if used within Docker world, need to be relative
+        ## to real world (because Polly container within Docker world
+        ## is sibling container to Docker world, so relative to real
+        ## world, not relative to Docker world)
+        volumes <- c(paste0(normalizePath("~/.aws"), ":/root/.aws"),
+                     paste0(normalizePath(getwd()), ":/aws"))
+    } else {
+        volumes=""
+    }
     TTS(read=pollyRead, speak=pollySpeak,
         voice=voice, engine=engine, format=format,
         sampleRate=sampleRate,
         language=language, lexicons=lexicons,
-        docker=docker)
+        docker=docker, volumes=volumes)
 }            
