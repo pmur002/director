@@ -16,7 +16,8 @@ pollyTTS(voice="Matthew",
          format=c("mp3", "ogg_vorbis", "pcm"),
          sampleRate="default",
          language=NULL,
-         lexicons=NULL) 
+         lexicons=NULL,
+         docker=FALSE) 
 }
 \arguments{
   \item{read}{A function that reads text from a \code{<dialogue>}
@@ -40,6 +41,8 @@ pollyTTS(voice="Matthew",
     (only some voices are multilingual).}
   \item{lexicons}{The lexicons (special pronunciations) used for
     the audio recording; a vector of filenames.}
+  \item{docker}{A logical indicating whether to use Docker image for
+    AWS CLI control of Polly (rather than local install of AWS CLI).}
 }
 \details{
   The \code{TTS} function is for defining new TTS engines for recording

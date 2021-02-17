@@ -1,7 +1,7 @@
 
 ## Support for shooting a video in a Docker "world"
 
-dockerWorld <- function(image, volumes=NULL, ...) {
+dockerWorld <- function(image, volumes=NULL) {
     directorWorld(image=image, volumes=volumes,
                   class="DirectorDockerWorld")
 }

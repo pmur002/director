@@ -1,20 +1,18 @@
-\name{shootVideo}
-\alias{shootVideo}
+\name{makeMovie}
+\alias{makeMovie}
 \title{
-  Read a video script
+  Make a Movie
 }
 \description{
-  Read the script for a video from an XML file.
-  This function is called by \code{\link{shootVideo}};  it is
-  exported so that the steps in video construction can be run
-  individually, e.g., for debugging purposes.
+  Make a movie from an XML script file.
 }
 \usage{
-shootVideo(filename,
-           wd=paste0(gsub("[.]xml$", "", filename), "-video"),
-           TTS=espeakTTS(),
-           validate=TRUE,
-           clean=FALSE) 
+makeMovie(filename,
+          wd=paste0(gsub("[.]xml$", "", filename), "-movie"),
+          TTS=espeakTTS(),
+          world=realWorld,
+          validate=TRUE,
+          clean=FALSE) 
 }
 \arguments{
   \item{filename}{The name of an XML script file.}
@@ -22,6 +20,8 @@ shootVideo(filename,
     created.}
   \item{TTS}{An object that can turn text into audio;  see
     \code{\link{TTS}}.}
+  \item{world}{The world that the movie will be set in; see
+    \code{\link{realWorld}}.}
   \item{validate}{Should the script be validated against a DTD.}
   \item{clean}{A logical indicating whether to erase the working
     directory before beginning recording.}
@@ -72,6 +72,6 @@ shootVideo(filename,
   Paul Murrell
 }
 \seealso{
-  \code{\link{TTS}}
+  \code{\link{TTS}}, \code{\link{realWorld}}.
 }
 \keyword{ utilities }

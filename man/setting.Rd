@@ -9,7 +9,7 @@
   Define the setting within which to shoot a video.
 }
 \usage{
-setting(create, focus, close, key, pointer)
+setting(create, capture, focus, close, key, pointer)
 localLinux()
 localWindows()
 }
@@ -18,6 +18,11 @@ localWindows()
     given information about a \code{location} element
     (x, y, width, height, and shell command).
     This function should return a numeric ID for the window.
+  }
+  \item{capture}{A function that can return the numeric ID of the
+    window with current focus.  Like \code{create}, it takes
+    a \code{location} (x, y, width, height) and modifies the
+    location and size of the window.
   }
   \item{focus}{A function that can give focus to a window on the
     desktop, given a numeric ID.  If the ID is \code{NULL}, the
