@@ -22,8 +22,13 @@ shootVideo.DirectorDockerWorld <- function(world,
                                 ## Keep container open
                                 "/bin/bash", tty=TRUE,
                                 ## Mount local output directory
+                                ## AND local docker engine socket 
+                                ## (so docker containers created within this
+                                ##  container will be "sibling" containers)
                                 ## AND any world$volumes specified by the user
                                 volumes=c(world$volumes,
+                                          paste0("/var/run/docker.sock",
+                                                 ":/var/run/docker.sock"),
                                           paste0(normalizePath(getwd()),
                                                  ":/home/director")),
                                 working_dir="/home/director")
